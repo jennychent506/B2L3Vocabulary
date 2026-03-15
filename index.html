@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VocabPop 單字挑戰 - B2L3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-page: #FFF9F2;
+            --main-purple: #5D5FEF;
+            --main-pink: #FFEDF6;
+            --main-yellow: #FFD93D;
+            --main-green: #A3E4B5;
+            --main-red: #FF8A8A;
+            --border-black: #000000;
+        }
+        body { 
+            font-family: 'Lexend', "Microsoft JhengHei", sans-serif; 
+            background-color: var(--bg-page);
+            color: var(--border-black);
+            overflow-x: hidden;
+        }
+        .brutal-card {
+            background: white; border: 4px solid var(--border-black);
+            box-shadow: 6px 6px 0px 0px var(--border-black); border-radius: 32px;
+        }
+        .brutal-btn {
+            border: 4px solid var(--border-black); box-shadow: 4px 4px 0px 0px var(--border-black);
+            transition: all 0.1s; cursor: pointer;
+        }
+        .brutal-btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px var(--border-black); }
+        .brutal-input { border: 4px solid var(--border-black); border-radius: 20px; padding: 16px; font-weight: 800; font-size: 1.2rem; }
+        
+        /* Learn Header - 漸層 + 點點背景 */
+        .learn-header {
+            background: 
+                radial-gradient(#ffffff44 2.5px, transparent 2.5px),
+                linear-gradient(135deg, #5D5FEF 0%, #4B4DDB 100%);
+            background-size: 24px 24px, 100% 100%;
+            border-radius: 28px 28px 0 0;
+            padding: 55px 20px 90px; 
+            color: white; 
+            text-align: center; 
+            position: relative;
+            border-bottom: 5px solid black;
+        }
+        .pos-tag {
+            position: absolute; top: 20px; left: 20px;
+            background: black; color: white; padding: 4px 14px;
+            border-radius: 14px; font-weight: 900; font-style: italic; font-size: 0.85rem;
+        }
+        .ipa-pill {
+            background: rgba(0,0,0,0.3); padding: 5px 24px;
+            border-radius: 99px; font-weight: 800; font-size: 1.1rem;
+            display: inline-block; margin-bottom: 15px;
+        }
+        .word-title { font-size: 5rem; font-weight: 900; line-height: 1; margin-bottom: 15px; letter-spacing: -2px; }
+        .word-pill-tag {
+            background: var(--main-yellow); color: black; border: 3.5px solid black;
+            padding: 6px 32px; border-radius: 20px; font-weight: 900; font-size: 1.5rem;
+            display: inline-block; margin-bottom: 25px;
+            box-shadow: 3.5px 3.5px 0px black;
+        }
+        /* Speaker Button with Heavy Shadow */
+        .speaker-btn {
+            width: 105px; height: 105px; background: white; border: 5px solid black;
+            box-shadow: 10px 10px 0px black; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto -145px; 
+            cursor: pointer; position: relative; z-index: 50;
+            transition: 0.1s;
+        }
+        .speaker-btn:active { transform: translate(4px, 4px); box-shadow: 6px 6px 0px black; }
+        
+        /* Mini Match UI */
+        .mini-match-card {
+            background: var(--main-pink); border: 3px solid #FFD1E8; border-radius: 28px; padding: 26px;
+            margin-top: 85px;
+        }
+        .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        .match-item {
+            background: white; border: 3px solid #FFD1E8; padding: 16px; border-radius: 20px;
+            font-size: 0.95rem; font-weight: 800; text-align: center; cursor: pointer;
+            box-shadow: 3px 3px 0px #FFD1E8;
+        }
+        .match-item.selected { background: var(--main-yellow); border-color: black; box-shadow: 3px 3px 0px black; }
+        .match-item.correct { background: #A3E4B5; border-color: black; opacity: 0.6; pointer-events: none; }
+
+        /* Coach Feedback Layer */
+        #feedbackOverlay {
+            position: fixed; inset: 0; z-index: 100; display: none;
+            align-items: center; justify-content: center; flex-direction: column;
+            background-color: rgba(255,255,255,0.85); backdrop-filter: blur(8px);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center min-h-screen p-4">
+
+    <!-- 即時反饋動畫層 -->
+    <div id="feedbackOverlay">
+        <div id="feedbackCard" class="brutal-card p-12 flex flex-col items-center gap-6 min-w-[340px]">
+            <div id="feedbackIcon" class="text-9xl mb-2">✅</div>
+            <div id="feedbackText" class="text-5xl font-black italic uppercase">Correct!</div>
+            <div id="feedbackCorrectAnswer" class="text-2xl font-bold text-gray-700 text-center"></div>
+        </div>
+    </div>
+
+    <!-- 1. 登入頁面 -->
+    <div id="loginPage" class="w-full max-w-md mt-10">
+        <div class="brutal-card p-10 space-y-8 bg-white">
+            <div class="flex flex-col items-center">
+                <div class="w-20 h-20 bg-[#FFD93D] rounded-full border-4 border-black shadow-[4px_4px_0px_black] flex items-center justify-center mb-6">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="black"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                </div>
+                <h1 class="text-4xl font-black italic tracking-tighter">
+                    <span class="text-[#7067E2]">VOCAB</span><span class="text-[#E89CC3]">POP</span>
+                </h1>
+                <p class="text-gray-400 font-black tracking-widest text-[10px] mt-2 uppercase">Student Login</p>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <input type="text" id="classInput" placeholder="班級" class="brutal-input outline-none focus:bg-yellow-50">
+                <input type="text" id="noInput" placeholder="座號" class="brutal-input outline-none focus:bg-yellow-50">
+            </div>
+            <input type="text" id="nameInput" placeholder="姓名" class="w-full brutal-input outline-none focus:bg-yellow-50">
+            <button onclick="login()" class="w-full py-5 brutal-btn bg-[#6B66FF] text-white font-black text-xl rounded-2xl shadow-[4px_4px_0px_black]">START JOURNEY →</button>
+        </div>
+    </div>
+
+    <!-- 2. 主選單 -->
+    <div id="mainMenu" class="w-full max-w-md hidden space-y-4">
+        <div class="flex items-center justify-between px-2 py-1">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-yellow-400 border-3 border-black rounded-full flex items-center justify-center font-black shadow-[2px_2px_0px_black]">⚡</div>
+                <div>
+                    <div class="font-black text-xs text-gray-800 tracking-tight">VOCABPOP</div>
+                    <div id="userInfoDisplay" class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter"></div>
+                </div>
+            </div>
+            <div class="bg-black text-white px-5 py-2 rounded-full border-2 border-black font-black text-xs shadow-[3px_3px_0px_#5D5FEF]">
+                LV.1 | <span id="xpCount">0</span> XP
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <button id="tabLearn" onclick="switchTab('learn')" class="py-4 brutal-btn bg-white font-black rounded-2xl flex items-center justify-center gap-2">📖 LEARN</button>
+            <button id="tabCoach" onclick="switchTab('coach')" class="py-4 brutal-btn bg-white font-black rounded-2xl flex items-center justify-center gap-2">🧠 COACH</button>
+        </div>
+
+        <div id="learnView" class="space-y-14 pt-4 pb-20"></div>
+
+        <div id="coachView" class="hidden pt-4 space-y-5">
+            <button onclick="startCoach('speak')" class="w-full flex items-center p-7 bg-[#A3E4B5] brutal-btn rounded-[32px]">
+                <div class="w-16 h-16 bg-white border-4 border-black rounded-2xl flex items-center justify-center mr-5 shadow-[3px_3px_0px_black]">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                </div>
+                <div class="text-left flex-grow"><h3 class="font-black text-2xl italic uppercase">Pro Speak</h3><p class="text-[11px] font-bold opacity-70">發音挑戰 (隨機 15 題)</p></div>
+                <div class="text-3xl font-black">→</div>
+            </button>
+            <button onclick="startCoach('spell')" class="w-full flex items-center p-7 bg-[#9CC2E8] brutal-btn rounded-[32px]">
+                <div class="w-16 h-16 bg-white border-4 border-black rounded-2xl flex items-center justify-center mr-5 shadow-[3px_3px_0px_black]">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M7 8h.01"></path><path d="M12 8h.01"></path><path d="M17 8h.01"></path><path d="M7 12h.01"></path><path d="M12 12h.01"></path><path d="M17 12h.01"></path><path d="M7 16h10"></path></svg>
+                </div>
+                <div class="text-left flex-grow"><h3 class="font-black text-2xl italic uppercase">Spell It</h3><p class="text-[11px] font-bold opacity-70">聽寫挑戰 (隨機 15 題)</p></div>
+                <div class="text-3xl font-black">→</div>
+            </button>
+            <button onclick="startCoach('fill')" class="w-full flex items-center p-7 bg-[#E8B67D] brutal-btn rounded-[32px]">
+                <div class="w-16 h-16 bg-white border-4 border-black rounded-2xl flex items-center justify-center mr-5 shadow-[3px_3px_0px_black]">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3z"></path></svg>
+                </div>
+                <div class="text-left flex-grow"><h3 class="font-black text-2xl italic uppercase">Fill In</h3><p class="text-[11px] font-bold opacity-70">時態克漏字 (隨機 15 題)</p></div>
+                <div class="text-3xl font-black">→</div>
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. 挑戰頁面 -->
+    <div id="challengePage" class="w-full max-w-md hidden space-y-6">
+        <div class="flex justify-between items-center">
+            <button onclick="backToMenu()" class="font-black border-3 border-black px-5 py-2 rounded-xl bg-white shadow-[3px_3px_0px_black]">← EXIT</button>
+            <div id="qCounter" class="bg-black text-white px-4 py-1.5 rounded-xl font-black text-sm">1 / 15</div>
+        </div>
+        <div id="challengeContainer" class="brutal-card p-10 bg-white min-h-[480px] flex flex-col items-center justify-center relative"></div>
+        <div class="w-full bg-gray-200 h-5 border-3 border-black rounded-full overflow-hidden">
+            <div id="progressBar" class="bg-pink-400 h-full w-0 transition-all duration-300"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- 請在此處填入您的 Google Apps Script URL ---
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwvZjdHRTuQeT80Dmp2RAvrO-u9qfX7R2TRgN8Gdfw8eJwoa6C8YXnCbdJpoQJYqOE1/exec"; 
+
+        const boldSpeakerIcon = `
+            <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+        `;
+        const boldMicIcon = `
+            <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+            </svg>
+        `;
+
+        /**
+         * Lesson 3 完整題庫 (從 PDF 提取，校對時態)
+         */
+        const vocabData = [
+            {
+                word: "grace", pos: "n. [U]", ipa: "/ɡres/", syllables: ["grace"], stressIndex: 0,
+                chinese: "優雅；優美", sentence: "The cat leapt onto the windowsill with grace, landing softly without a sound.", targetForm: "grace",
+                collocations: [{ en: "natural grace", zh: "天生的優雅" }, { en: "social graces", zh: "社交禮儀" }, { en: "with grace", zh: "優雅地" }],
+                wordFamily: [{ word: "graceful", pos: "adj.", chinese: "優美的", fillBlank: "The ballet dancer's movements were so _______ that everyone watched in admiration.", targetForm: "graceful" }]
+            },
+            {
+                word: "desperately", pos: "adv.", ipa: "/ˈdespərıtlı/", syllables: ["des", "per", "ate", "ly"], stressIndex: 0,
+                chinese: "拚命地", sentence: "The mother desperately searched the crowded mall for her missing child.", targetForm: "desperately",
+                collocations: [{ en: "desperately need", zh: "極度需要" }, { en: "search desperately", zh: "拚命搜尋" }, { en: "want desperately", zh: "極度渴望" }],
+                wordFamily: [{ word: "desperate", pos: "adj.", chinese: "渴望的", fillBlank: "The little girl was _______ for attention, so she kept dropping forks.", targetForm: "desperate" }]
+            },
+            {
+                word: "reluctantly", pos: "adv.", ipa: "/riˈlaktəntli/", syllables: ["re", "luc", "tant", "ly"], stressIndex: 1,
+                chinese: "不情願地", sentence: "John reluctantly agreed to tidy his bedroom after his mother asked him for the fourth time.", targetForm: "reluctantly",
+                collocations: [{ en: "reluctantly agree", zh: "勉強同意" }, { en: "reluctantly accept", zh: "不情願接受" }],
+                wordFamily: [{ word: "reluctant", pos: "adj.", chinese: "勉強的", fillBlank: "Nora was having such a good time that she was _______ to leave Tokyo.", targetForm: "reluctant" }]
+            },
+            {
+                word: "describe", pos: "vt.", ipa: "/dıˈskraib/", syllables: ["de", "scribe"], stressIndex: 1,
+                chinese: "描述", sentence: "People often describe Zoe as someone who is dedicated to her work.", targetForm: "describe",
+                collocations: [{ en: "describe in detail", zh: "詳細描述" }, { en: "accurately describe", zh: "準確描述" }],
+                wordFamily: [{ word: "description", pos: "n.", chinese: "描述", fillBlank: "The beauty of the sunset was beyond _______.", targetForm: "description" }]
+            },
+            {
+                word: "shiver", pos: "vi.", ipa: "/ˈʃıvə/", syllables: ["shiv", "er"], stressIndex: 0,
+                chinese: "顫抖", sentence: "Jamie shivered with fear as the large dog drew nearer.", targetForm: "shivered",
+                collocations: [{ en: "shiver with cold", zh: "冷得發抖" }, { en: "shiver with fear", zh: "恐懼發抖" }],
+                wordFamily: []
+            },
+            {
+                word: "faint", pos: "vi.", ipa: "/fent/", syllables: ["faint"], stressIndex: 0,
+                chinese: "昏厥；暈倒", sentence: "After Ben ran for an hour in the heat, he was exhausted and nearly fainted.", targetForm: "fainted",
+                collocations: [{ en: "nearly faint", zh: "幾乎昏倒" }, { en: "feel faint", zh: "感到暈眩" }],
+                wordFamily: []
+            },
+            {
+                word: "scientific", pos: "adj.", ipa: "/sarən'tıfık/", syllables: ["sci", "en", "ti", "fic"], stressIndex: 2,
+                chinese: "科學的", sentence: "The students conducted a scientific experiment to find out plant growth.", targetForm: "scientific",
+                collocations: [{ en: "scientific study", zh: "科學研究" }, { en: "scientific proof", zh: "科學證據" }],
+                wordFamily: []
+            },
+            {
+                word: "frustrate", pos: "vt.", ipa: "/ˈfras tret/", syllables: ["frus", "trate"], stressIndex: 0,
+                chinese: "使沮喪", sentence: "It frustrates me that I'm not able to communicate fluently.", targetForm: "frustrates",
+                collocations: [{ en: "deeply frustrate", zh: "深受挫折" }],
+                wordFamily: [{ word: "frustration", pos: "n.", chinese: "沮喪", fillBlank: "Harry yelled out in _______ when he realized he had locked himself out.", targetForm: "frustration" }]
+            },
+            {
+                word: "stubborn", pos: "adj.", ipa: "/ˈstabən/", syllables: ["stub", "born"], stressIndex: 0,
+                chinese: "頑固的", sentence: "Despite his friends' advice, Jack remained stubborn.", targetForm: "stubborn",
+                collocations: [{ en: "remain stubborn", zh: "堅持己見" }],
+                wordFamily: []
+            },
+            {
+                word: "rage", pos: "n.", ipa: "/redʒ/", syllables: ["rage"], stressIndex: 0,
+                chinese: "狂怒", sentence: "Kris stormed out of the room in a rage after an argument.", targetForm: "rage",
+                collocations: [{ en: "fly into a rage", zh: "勃然大怒" }, { en: "tremble with rage", zh: "憤怒顫抖" }],
+                wordFamily: []
+            },
+            {
+                word: "concentrate", pos: "vi. vt.", ipa: "/ˈkansn, tret/", syllables: ["con", "cen", "trate"], stressIndex: 0,
+                chinese: "專注；集中", sentence: "Sandy was concentrating on the video game so fully.", targetForm: "concentrating",
+                collocations: [{ en: "concentrate on", zh: "專注於" }, { en: "hard to concentrate", zh: "難以專注" }],
+                wordFamily: [{ word: "concentration", pos: "n.", chinese: "專注力", fillBlank: "Julia began to lose _______ after she studied for several hours.", targetForm: "concentration" }]
+            },
+            {
+                word: "explain", pos: "vt. vi.", ipa: "/ikˈsplen/", syllables: ["ex", "plain"], stressIndex: 1,
+                chinese: "解釋", sentence: "Before the game started, the coach carefully explained the rules.", targetForm: "explained",
+                collocations: [{ en: "explain in detail", zh: "詳細解釋" }],
+                wordFamily: [{ word: "explanation", pos: "n.", chinese: "解釋", fillBlank: "The manager asked Lily to provide an _______ for her absence.", targetForm: "explanation" }]
+            },
+            {
+                word: "sincerity", pos: "n.", ipa: "/sınserətı/", syllables: ["sin", "ce", "ri", "ty"], stressIndex: 1,
+                chinese: "真誠", sentence: "Because George had said sorry with so much sincerity, Amy forgave him.", targetForm: "sincerity",
+                collocations: [{ en: "with sincerity", zh: "真誠地" }],
+                wordFamily: [{ word: "sincere", pos: "adj.", chinese: "真誠的", fillBlank: "Sarah expressed her _______ thanks to the volunteers.", targetForm: "sincere" }]
+            },
+            {
+                word: "confess", pos: "vt. vi.", ipa: "/kənˈfes/", syllables: ["con", "fess"], stressIndex: 1,
+                chinese: "坦白；承認", sentence: "Although stealing was his idea, Kevin confessed he drove it.", targetForm: "confessed",
+                collocations: [{ en: "confess to someone", zh: "向某人坦白" }],
+                wordFamily: [{ word: "confession", pos: "n.", chinese: "坦白", fillBlank: "The police questioned Tom before he finally made a _______.", targetForm: "confession" }]
+            },
+            {
+                word: "restore", pos: "vt.", ipa: "/riˈstor/", syllables: ["re", "store"], stressIndex: 1,
+                chinese: "恢復", sentence: "After a long battle with illness, Lisa is now fully restored.", targetForm: "restored",
+                collocations: [{ en: "restore to health", zh: "恢復健康" }],
+                wordFamily: []
+            },
+            {
+                word: "fade", pos: "vi.", ipa: "/fed/", syllables: ["fade"], stressIndex: 0,
+                chinese: "逐漸消失", sentence: "Mark's dream of becoming a writer started to fade.", targetForm: "fade",
+                collocations: [{ en: "start to fade", zh: "開始消失" }],
+                wordFamily: []
+            },
+            {
+                word: "hardly", pos: "adv.", ipa: "/ˈhardli/", syllables: ["hard", "ly"], stressIndex: 0,
+                chinese: "幾乎不", sentence: "Noah had no idea Tammy sang so well. He could hardly believe it.", targetForm: "hardly",
+                collocations: [{ en: "hardly ever", zh: "幾乎從不" }],
+                wordFamily: []
+            },
+            {
+                word: "trace", pos: "n.", ipa: "/tres/", syllables: ["trace"], stressIndex: 0,
+                chinese: "痕跡", sentence: "The search team found no clues; she had vanished without a trace.", targetForm: "trace",
+                collocations: [{ en: "without a trace", zh: "杳無音訊" }],
+                wordFamily: []
+            },
+            {
+                word: "depart", pos: "vt. vi.", ipa: "/diˈpart/", syllables: ["de", "part"], stressIndex: 1,
+                chinese: "出發；去世", sentence: "The soldier departed this world peacefully after years of service.", targetForm: "departed",
+                collocations: [{ en: "depart for", zh: "前往..." }],
+                wordFamily: [{ word: "departure", pos: "n.", chinese: "離開", fillBlank: "Due to rough seas, the ship's _______ was delayed.", targetForm: "departure" }]
+            },
+            {
+                word: "regret", pos: "vt. n.", ipa: "/ri'gret/", syllables: ["re", "gret"], stressIndex: 1,
+                chinese: "懊悔", sentence: "Jill began to regret her decision to move without a job.", targetForm: "regret",
+                collocations: [{ en: "deeply regret", zh: "深深後悔" }],
+                wordFamily: []
+            }
+        ];
+
+        let state = { user: {}, xp: 0, currentView: 'login', challengePool: [], qIndex: 0, score: 0 };
+
+        function login() {
+            const cl = document.getElementById('classInput').value;
+            const no = document.getElementById('noInput').value;
+            const nm = document.getElementById('nameInput').value;
+            if(!cl || !no || !nm) return;
+            state.user = { class: cl, no: no, name: nm };
+            document.getElementById('userInfoDisplay').innerText = `${cl}班 ${no}號 ${nm}`;
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('mainMenu').classList.remove('hidden');
+            switchTab('learn');
+        }
+
+        function switchTab(tab) {
+            state.currentView = tab;
+            document.getElementById('learnView').classList.toggle('hidden', tab !== 'learn');
+            document.getElementById('coachView').classList.toggle('hidden', tab !== 'coach');
+            document.getElementById('tabLearn').style.backgroundColor = tab === 'learn' ? 'var(--main-pink)' : 'white';
+            document.getElementById('tabCoach').style.backgroundColor = tab === 'coach' ? 'var(--main-pink)' : 'white';
+            if(tab === 'learn') renderLearn();
+        }
+
+        function renderLearn() {
+            const container = document.getElementById('learnView');
+            container.innerHTML = vocabData.map((v, idx) => `
+                <div class="brutal-card overflow-visible bg-white mb-24 relative">
+                    <div class="learn-header">
+                        <div class="pos-tag">${v.pos}</div>
+                        <div class="ipa-pill">${v.ipa}</div>
+                        <div class="word-title">${v.word}</div>
+                        <div class="word-pill-tag">${v.word}</div>
+                        <div class="speaker-btn" onclick="speak('${v.word}')">${boldSpeakerIcon}</div>
+                    </div>
+                    <div class="p-10 pt-28 space-y-10">
+                        <div><div class="font-black mb-3 uppercase text-xs text-gray-400 tracking-widest">Meaning</div><p class="text-3xl font-black text-[#5D5FEF] border-l-8 border-[#5D5FEF] pl-5 italic">${v.chinese}</p></div>
+                        <div><div class="font-black mb-3 uppercase text-xs text-gray-400 tracking-widest">Example</div><div class="bg-gray-50 border-4 border-gray-100 p-8 rounded-[32px] italic font-bold text-gray-700 text-xl">"${v.sentence}"</div></div>
+                        <div class="mini-match-card"><div class="text-pink-600 font-black text-xs uppercase mb-3 tracking-widest">✨ Mini Match</div><div class="match-grid" id="match-grid-${idx}">
+                            ${shuffleArray([...v.collocations]).map(c => `<div class="match-item" onclick="handleMatch(this, '${c.en}', ${idx}, 'en')">${c.en}</div>`).join('')}
+                            ${shuffleArray([...v.collocations]).map(c => `<div class="match-item" onclick="handleMatch(this, '${c.en}', ${idx}, 'zh')">${c.zh}</div>`).join('')}
+                        </div></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function handleMatch(el, val, idx, type) {
+            if (el.classList.contains('correct')) return;
+            const grid = document.getElementById(`match-grid-${idx}`);
+            if (type === 'en') {
+                grid.querySelectorAll('.match-item').forEach(i => i.classList.remove('selected'));
+                el.classList.add('selected');
+                state.matchSelected = { en: val, idx: idx, el: el };
+            } else if (state.matchSelected && state.matchSelected.idx === idx) {
+                if (val === state.matchSelected.en) {
+                    el.classList.add('correct'); state.matchSelected.el.classList.add('correct');
+                    state.xp += 5; updateXPDisplay();
+                    if(grid.querySelectorAll('.match-item.correct').length >= 4) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+                } else { el.classList.add('bg-red-200'); setTimeout(() => el.classList.remove('bg-red-200'), 500); }
+                state.matchSelected = null;
+            }
+        }
+
+        function showFeedback(isCorrect, correctAnswer = "") {
+            const overlay = document.getElementById('feedbackOverlay');
+            overlay.style.display = 'flex';
+            const card = document.getElementById('feedbackCard');
+            const icon = document.getElementById('feedbackIcon');
+            const text = document.getElementById('feedbackText');
+            const ans = document.getElementById('feedbackCorrectAnswer');
+
+            if(isCorrect) {
+                card.style.backgroundColor = 'var(--main-green)'; icon.innerText = '✅'; text.innerText = 'Excellent!'; ans.innerText = '+10 XP';
+            } else {
+                card.style.backgroundColor = 'var(--main-red)'; icon.innerText = '❌'; text.innerText = 'Not Quite...'; ans.innerText = `Correct: ${correctAnswer}`;
+            }
+            setTimeout(() => { overlay.style.display = 'none'; nextQuestion(); }, isCorrect ? 900 : 2500);
+        }
+
+        function startCoach(type) {
+            state.currentChallenge = type; state.qIndex = 0; state.score = 0;
+            let pool = [];
+            vocabData.forEach(v => {
+                pool.push({ word: v.word, targetForm: v.targetForm, type: 'core', chinese: v.chinese, data: v });
+                v.wordFamily.forEach(f => pool.push({ word: f.word, targetForm: f.targetForm, chinese: f.chinese, fillBlank: f.fillBlank, type: 'family', data: v }));
+            });
+            state.challengePool = shuffleArray(pool).slice(0, 15);
+            document.getElementById('mainMenu').classList.add('hidden');
+            document.getElementById('challengePage').classList.remove('hidden');
+            renderChallenge();
+        }
+
+        function renderChallenge() {
+            const container = document.getElementById('challengeContainer');
+            const q = state.challengePool[state.qIndex];
+            document.getElementById('qCounter').innerText = `${state.qIndex + 1} / 15`;
+            document.getElementById('progressBar').style.width = `${((state.qIndex + 1) / 15) * 100}%`;
+            container.innerHTML = "";
+            if (state.currentChallenge === 'speak') {
+                container.innerHTML = `<h2 class="text-7xl font-black mb-12 italic tracking-tighter uppercase">${q.word}</h2><div onclick="recognitionStart()" id="micBtn" class="w-52 h-52 bg-yellow-400 rounded-full border-5 border-black brutal-btn flex items-center justify-center cursor-pointer mb-8 shadow-[12px_12px_0px_black]">${boldMicIcon}</div><p id="micHint" class="font-black text-gray-500 uppercase tracking-widest text-sm">Tap to Record</p>`;
+            } else if (state.currentChallenge === 'spell') {
+                container.innerHTML = `<div class="w-full space-y-12 text-center"><div onclick="speak('${q.word}')" class="w-32 h-32 bg-blue-100 mx-auto rounded-[40px] border-4 border-black brutal-btn flex items-center justify-center cursor-pointer shadow-[8px_8px_0px_black]">${boldSpeakerIcon}</div><input type="text" id="spellInput" class="w-full brutal-input text-center outline-none uppercase text-4xl font-black tracking-widest"><button onclick="checkSpell()" class="w-full py-6 brutal-btn bg-black text-white font-black rounded-2xl text-2xl uppercase shadow-[6px_6px_0px_white]">Submit</button></div>`;
+                setTimeout(() => document.getElementById('spellInput').focus(), 150);
+            } else {
+                const fillText = q.fillBlank || q.data.sentence.replace(q.targetForm, "_______");
+                container.innerHTML = `<div class="w-full text-left space-y-10"><div class="bg-gray-100 p-10 rounded-[48px] border-4 border-black italic font-bold text-2xl shadow-[8px_8px_0px_black]">"${fillText}"</div><p class="text-sm font-black text-orange-600 uppercase tracking-widest px-3 italic">時態與詞形 (Hint: ${q.chinese})</p><input type="text" id="fillInput" class="w-full brutal-input outline-none text-2xl font-black"><button onclick="checkFill()" class="w-full py-6 brutal-btn bg-orange-400 font-black rounded-2xl text-white text-2xl uppercase">Check</button></div>`;
+            }
+        }
+
+        function recognitionStart() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) return alert("Browser not supported");
+            const r = new SpeechRecognition(); r.lang = 'en-US';
+            document.getElementById('micBtn').style.backgroundColor = '#FF8A8A';
+            r.onresult = (e) => {
+                const transcript = e.results[0][0].transcript.toLowerCase();
+                const target = state.challengePool[state.qIndex].word.toLowerCase();
+                if(transcript.includes(target)) { state.score += 10; state.xp += 10; updateXPDisplay(); showFeedback(true); } 
+                else { showFeedback(false, target); }
+            };
+            r.onend = () => { document.getElementById('micBtn').style.backgroundColor = 'var(--main-yellow)'; };
+            r.start();
+        }
+
+        function checkSpell() {
+            const input = document.getElementById('spellInput').value.toLowerCase().trim();
+            const correct = state.challengePool[state.qIndex].word.toLowerCase();
+            if(input === correct) { state.score += 10; state.xp += 10; updateXPDisplay(); showFeedback(true); } else { showFeedback(false, correct); }
+        }
+
+        function checkFill() {
+            const input = document.getElementById('fillInput').value.toLowerCase().trim();
+            const correct = state.challengePool[state.qIndex].targetForm.toLowerCase();
+            if(input === correct) { state.score += 10; state.xp += 10; updateXPDisplay(); showFeedback(true); } else { showFeedback(false, correct); }
+        }
+
+        function nextQuestion() { state.qIndex++; if (state.qIndex < 15) renderChallenge(); else finishChallenge(); }
+
+        function finishChallenge() {
+            document.getElementById('challengeContainer').innerHTML = `<div class="text-center space-y-10"><div class="text-[10rem] animate-bounce">🏆</div><h2 class="text-5xl font-black italic uppercase tracking-tighter">Excellent Work!</h2><div class="text-7xl font-black text-[#5D5FEF]">+ ${state.score} XP</div><button onclick="backToMenu()" class="w-full py-6 brutal-btn bg-yellow-400 font-black rounded-[32px] uppercase text-2xl">Return Home</button></div>`;
+            uploadToSheets();
+        }
+
+        function uploadToSheets() {
+            if (!SCRIPT_URL) return;
+            const data = { ...state.user, score: state.score, type: state.currentChallenge, timestamp: new Date().toLocaleString() };
+            fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
+        }
+
+        function backToMenu() { document.getElementById('challengePage').classList.add('hidden'); document.getElementById('mainMenu').classList.remove('hidden'); }
+        function speak(t) { const m = new SpeechSynthesisUtterance(t); m.lang = 'en-US'; window.speechSynthesis.speak(m); }
+        function shuffleArray(a) { return a.sort(() => Math.random() - 0.5); }
+        function updateXPDisplay() { document.getElementById('xpCount').innerText = state.xp; }
+    </script>
+</body>
+</html>
