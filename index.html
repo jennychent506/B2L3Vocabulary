@@ -9,12 +9,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
+            /* 櫻花粉色系漸層 */
             --bg-sakura-top: #FFF0F5;
             --bg-sakura-bottom: #FFD1DC;
-            --main-purple: #6B66FF;
+            --main-purple: #5D5FEF;
             --main-pink-dark: #D85B8C;
             --main-yellow: #FFD93D;
             --border-black: #000000;
+            --btn-blue: #6B66FF;
         }
         body { 
             font-family: 'Lexend', "Microsoft JhengHei", sans-serif; 
@@ -35,65 +37,44 @@
         .brutal-btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px var(--border-black); }
         
         .brutal-input { 
-            border: 4px solid var(--border-black); 
-            border-radius: 20px; 
-            padding: 16px; 
-            font-weight: 800; 
-            font-size: 1.25rem;
-            outline: none;
+            border: 4px solid var(--border-black); border-radius: 20px; 
+            padding: 16px; font-weight: 800; font-size: 1.25rem; outline: none;
         }
 
-        /* 櫻花粉加強版 Login 特殊樣式 */
-        .login-card-top-bar {
-            background-color: var(--main-pink-dark);
-            height: 18px;
-            width: 100%;
-            border-bottom: 4px solid black;
-        }
+        /* Login Card 裝飾 */
+        .login-card-top-bar { background-color: var(--main-pink-dark); height: 18px; width: 100%; border-bottom: 4px solid black; }
 
-        /* Learn Header - 漸層 + 點點背景 */
+        /* Learn Header - 紫色點點背景 */
         .learn-header {
-            background: 
-                radial-gradient(#ffffff44 2.5px, transparent 2.5px),
-                linear-gradient(135deg, #5D5FEF 0%, #4B4DDB 100%);
+            background: radial-gradient(#ffffff44 2.5px, transparent 2.5px), linear-gradient(135deg, #5D5FEF 0%, #4B4DDB 100%);
             background-size: 24px 24px, 100% 100%;
             border-radius: 28px 28px 0 0;
-            padding: 55px 20px 90px; 
-            color: white; 
-            text-align: center; 
-            position: relative;
+            padding: 55px 20px 85px; color: white; text-align: center; position: relative;
             border-bottom: 5px solid black;
         }
-        .pos-tag {
-            position: absolute; top: 20px; left: 20px;
-            background: black; color: white; padding: 4px 14px;
-            border-radius: 14px; font-weight: 900; font-style: italic; font-size: 0.85rem;
-        }
-        .ipa-pill {
-            background: rgba(0,0,0,0.3); padding: 5px 24px;
-            border-radius: 99px; font-weight: 800; font-size: 1.1rem;
-            display: inline-block; margin-bottom: 15px;
-        }
-        .word-title { font-size: 5.5rem; font-weight: 900; line-height: 1; margin-bottom: 15px; letter-spacing: -2px; }
-        .word-pill-tag {
-            background: var(--main-yellow); color: black; border: 3.5px solid black;
-            padding: 6px 32px; border-radius: 20px; font-weight: 900; font-size: 1.5rem;
-            display: inline-block; margin-bottom: 25px;
-            box-shadow: 3.5px 3.5px 0px black;
-        }
+        .pos-tag { position: absolute; top: 20px; left: 20px; background: black; color: white; padding: 4px 12px; border-radius: 12px; font-weight: 900; font-style: italic; font-size: 0.8rem; }
+        .ipa-pill { background: rgba(0,0,0,0.3); padding: 5px 20px; border-radius: 99px; font-weight: 800; font-size: 0.9rem; display: inline-block; margin-bottom: 12px; }
+        .word-title { font-size: 4.5rem; font-weight: 900; line-height: 1.1; margin-bottom: 20px; color: white; word-wrap: break-word; text-shadow: 2px 2px 0px rgba(0,0,0,0.2); }
+        
+        /* 音節膠囊 */
+        .syllable-container { display: flex; justify-content: center; gap: 8px; margin-bottom: 25px; flex-wrap: wrap; }
+        .syllable-pill { padding: 4px 16px; border-radius: 12px; font-weight: 800; font-size: 1rem; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); color: white; }
+        .syllable-pill.stress { background: var(--main-yellow); border-color: black; color: black; box-shadow: 2px 2px 0px black; }
+
+        /* Speaker 按鈕大黑影 */
         .speaker-btn {
-            width: 105px; height: 105px; background: white; border: 5px solid black;
+            width: 96px; height: 96px; background: white; border: 5px solid black;
             box-shadow: 10px 10px 0px black; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            margin: 0 auto -145px; 
-            cursor: pointer; position: relative; z-index: 50;
+            margin: 0 auto -135px; cursor: pointer; position: relative; z-index: 50;
         }
 
-        /* Word Family & Match */
-        .family-box { background: #F3F1FF; border: 2px solid #5D5FEF; border-radius: 20px; padding: 16px; margin-top: 10px; }
-        .mini-match-card { background: #FFEDF6; border: 3px solid #FFB7C5; border-radius: 28px; padding: 26px; margin-top: 85px; }
-        .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
-        .match-item { background: white; border: 3px solid #FFB7C5; padding: 16px; border-radius: 20px; font-size: 0.95rem; font-weight: 800; text-align: center; cursor: pointer; box-shadow: 3px 3px 0px #FFB7C5; }
+        /* 內容區塊樣式 */
+        .section-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid black; display: inline-block; margin-right: 8px; }
+        .family-box { background: #EEF2FF; border: 2px solid #C7D2FE; border-radius: 20px; padding: 18px; margin: 15px 0; }
+        .mini-match-card { background: #FFEDF6; border: 3px solid #FFB7C5; border-radius: 28px; padding: 24px; margin-top: 85px; }
+        .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+        .match-item { background: white; border: 3px solid #FFB7C5; padding: 14px; border-radius: 16px; font-size: 0.9rem; font-weight: 800; text-align: center; cursor: pointer; box-shadow: 3px 3px 0px #FFB7C5; }
         .match-item.selected { background: var(--main-yellow); border-color: black; box-shadow: 3px 3px 0px black; }
         .match-item.correct { background: #A3E4B5; border-color: black; opacity: 0.6; pointer-events: none; }
 
@@ -103,7 +84,7 @@
 </head>
 <body class="flex flex-col items-center p-4">
 
-    <!-- 即時反饋層 -->
+    <!-- 反饋動畫層 -->
     <div id="feedbackOverlay">
         <div id="feedbackCard" class="brutal-card p-12 flex flex-col items-center gap-6 min-w-[340px]">
             <div id="feedbackIcon" class="text-9xl mb-2">✅</div>
@@ -112,19 +93,15 @@
         </div>
     </div>
 
-    <!-- 1. 登入頁面 (根據截圖 9.02.54 更新) -->
+    <!-- 1. 登入頁面 (櫻花粉 + 首頁 UI 同步) -->
     <div id="loginPage" class="w-full max-w-md mt-10">
         <div class="brutal-card overflow-hidden bg-white">
-            <!-- 頂部粉色裝飾條 -->
             <div class="login-card-top-bar"></div>
-            
             <div class="p-8 pt-10 space-y-10">
                 <div class="flex flex-col items-center">
-                    <!-- 黃色閃電圖標 -->
                     <div class="w-24 h-24 bg-[#FFD93D] rounded-full border-4 border-black shadow-[5px_5px_0px_black] flex items-center justify-center mb-6">
                         <svg width="48" height="48" viewBox="0 0 24 24" fill="black"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                     </div>
-                    <!-- 標題 VOCABPOP -->
                     <h1 class="text-5xl font-black italic tracking-tighter mb-2">
                         <span class="text-[#5D5FEF]">VOCAB</span><span class="text-[#D85B8C]">POP</span>
                     </h1>
@@ -134,21 +111,21 @@
                 <div class="space-y-6">
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-2">
-                            <label class="font-black text-gray-500 uppercase text-sm pl-1">Class (班級) *</label>
+                            <label class="font-black text-gray-400 uppercase text-xs pl-1">Class (班級) *</label>
                             <input type="text" id="classInput" placeholder="104" class="w-full brutal-input focus:bg-pink-50">
                         </div>
                         <div class="space-y-2">
-                            <label class="font-black text-gray-500 uppercase text-sm pl-1">No. (座號) *</label>
+                            <label class="font-black text-gray-400 uppercase text-xs pl-1">No. (座號) *</label>
                             <input type="text" id="noInput" placeholder="e.g. 15" class="w-full brutal-input focus:bg-pink-50">
                         </div>
                     </div>
                     <div class="space-y-2">
-                        <label class="font-black text-gray-500 uppercase text-sm pl-1">Name (姓名) *</label>
+                        <label class="font-black text-gray-400 uppercase text-xs pl-1">Name (姓名) *</label>
                         <input type="text" id="nameInput" placeholder="e.g. 王小明" class="w-full brutal-input focus:bg-pink-50">
                     </div>
                 </div>
 
-                <button onclick="login()" class="w-full py-6 brutal-btn bg-[#6B66FF] text-white font-black text-2xl rounded-2xl flex items-center justify-center gap-3 shadow-[6px_6px_0px_black] uppercase italic tracking-wider">
+                <button onclick="login()" class="w-full py-6 brutal-btn bg-[#6B66FF] text-white font-black text-2xl rounded-2xl flex items-center justify-center gap-3 shadow-[6px_6px_0px_black] uppercase italic">
                     Start Journey 
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </button>
@@ -161,141 +138,99 @@
         <div class="flex items-center justify-between px-2 py-1">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-yellow-400 border-3 border-black rounded-full flex items-center justify-center font-black shadow-[2px_2px_0px_black]">⚡</div>
-                <div>
-                    <div class="font-black text-xs text-gray-800">VOCABPOP</div>
-                    <div id="userInfoDisplay" class="text-[10px] font-bold text-gray-500 uppercase tracking-tighter"></div>
-                </div>
+                <div id="userInfoDisplay" class="text-[10px] font-bold text-gray-500 uppercase"></div>
             </div>
-            <div class="bg-black text-white px-5 py-2 rounded-full border-2 border-black font-black text-xs">
-                LV.1 | <span id="xpCount">0</span> XP
-            </div>
+            <div class="bg-black text-white px-5 py-2 rounded-full border-2 border-black font-black text-xs">LV.1 | <span id="xpCount">0</span> XP</div>
         </div>
-
         <div class="grid grid-cols-2 gap-4">
             <button id="tabLearn" onclick="switchTab('learn')" class="py-4 brutal-btn bg-white font-black rounded-2xl flex items-center justify-center gap-2">📖 LEARN</button>
             <button id="tabCoach" onclick="switchTab('coach')" class="py-4 brutal-btn bg-white font-black rounded-2xl flex items-center justify-center gap-2 text-pink-600">🧠 COACH</button>
         </div>
-
-        <div id="learnView" class="space-y-14 pt-4 pb-20"></div>
-
+        <div id="learnView" class="space-y-16 pt-4 pb-20"></div>
         <div id="coachView" class="hidden pt-4 space-y-5">
-            <!-- Coach 模式按鈕保持截圖風格 -->
-            <button onclick="startCoach('speak')" class="w-full flex items-center p-7 bg-[#A3E4B5] brutal-btn rounded-[32px]">
-                <div class="w-16 h-16 bg-white border-4 border-black rounded-2xl flex items-center justify-center mr-5 text-3xl shadow-[3px_3px_0px_black]"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg></div>
-                <div class="text-left flex-grow"><h3 class="font-black text-2xl italic uppercase">Pro Speak</h3><p class="text-[11px] font-bold opacity-70">發音挑戰 (隨機 15 題)</p></div>
-                <div class="text-3xl font-black">→</div>
-            </button>
-            <button onclick="startCoach('spell')" class="w-full flex items-center p-7 bg-[#9CC2E8] brutal-btn rounded-[32px]">
-                <div class="w-16 h-16 bg-white border-4 border-black rounded-2xl flex items-center justify-center mr-5 text-3xl shadow-[3px_3px_0px_black]"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M7 8h.01"></path><path d="M12 8h.01"></path><path d="M17 8h.01"></path><path d="M7 12h.01"></path><path d="M12 12h.01"></path><path d="M17 12h.01"></path><path d="M7 16h10"></path></svg></div>
-                <div class="text-left flex-grow"><h3 class="font-black text-2xl italic uppercase">Spell It</h3><p class="text-[11px] font-bold opacity-70">聽寫挑戰 (隨機 15 題)</p></div>
-                <div class="text-3xl font-black">→</div>
-            </button>
-            <button onclick="startCoach('fill')" class="w-full flex items-center p-7 bg-[#E8B67D] brutal-btn rounded-[32px]">
-                <div class="w-16 h-16 bg-white border-4 border-black rounded-2xl flex items-center justify-center mr-5 text-3xl shadow-[3px_3px_0px_black]"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3z"></path></svg></div>
-                <div class="text-left flex-grow"><h3 class="font-black text-2xl italic uppercase">Fill In</h3><p class="text-[11px] font-bold opacity-70">時態克漏字 (隨機 15 題)</p></div>
-                <div class="text-3xl font-black">→</div>
-            </button>
+            <button onclick="startCoach('speak')" class="w-full flex items-center p-7 bg-[#A3E4B5] brutal-btn rounded-[32px]"><div class="w-16 h-16 bg-white border-4 border-black rounded-2xl flex items-center justify-center mr-5 shadow-[3px_3px_0px_black] text-2xl">🎤</div><div class="text-left flex-grow"><h3 class="font-black text-2xl uppercase italic">Pro Speak</h3><p class="text-[11px] font-bold opacity-70">發音挑戰 (隨機 15 題)</p></div></button>
+            <button onclick="startCoach('spell')" class="w-full flex items-center p-7 bg-[#9CC2E8] brutal-btn rounded-[32px]"><div class="w-16 h-16 bg-white border-4 border-black rounded-2xl flex items-center justify-center mr-5 shadow-[3px_3px_0px_black] text-2xl">⌨</div><div class="text-left flex-grow"><h3 class="font-black text-2xl uppercase italic">Spell It</h3><p class="text-[11px] font-bold opacity-70">聽寫挑戰 (隨機 15 題)</p></div></button>
+            <button onclick="startCoach('fill')" class="w-full flex items-center p-7 bg-[#E8B67D] brutal-btn rounded-[32px]"><div class="w-16 h-16 bg-white border-4 border-black rounded-2xl flex items-center justify-center mr-5 shadow-[3px_3px_0px_black] text-2xl">✏</div><div class="text-left flex-grow"><h3 class="font-black text-2xl uppercase italic">Fill In</h3><p class="text-[11px] font-bold opacity-70">時態克漏字 (隨機 15 題)</p></div></button>
         </div>
     </div>
 
-    <!-- 3. 挑戰介面 -->
+    <!-- 3. 挑戰頁面 -->
     <div id="challengePage" class="w-full max-w-md hidden space-y-6">
-        <div class="flex justify-between items-center">
-            <button onclick="backToMenu()" class="font-black border-3 border-black px-5 py-2 rounded-xl bg-white shadow-[3px_3px_0px_black]">← EXIT</button>
-            <div id="qCounter" class="bg-black text-white px-4 py-1.5 rounded-xl font-black text-sm">1 / 15</div>
-        </div>
-        <div id="challengeContainer" class="brutal-card p-10 bg-white min-h-[480px] flex flex-col items-center justify-center relative"></div>
-        <div class="w-full bg-gray-200 h-5 border-3 border-black rounded-full overflow-hidden">
-            <div id="progressBar" class="bg-pink-400 h-full w-0 transition-all duration-300"></div>
-        </div>
+        <div class="flex justify-between items-center"><button onclick="backToMenu()" class="font-black border-3 border-black px-5 py-2 rounded-xl bg-white shadow-[3px_3px_0px_black]">← EXIT</button><div id="qCounter" class="bg-black text-white px-4 py-1.5 rounded-xl font-black text-sm">1 / 15</div></div>
+        <div id="challengeContainer" class="brutal-card p-10 bg-white min-h-[500px] flex flex-col items-center justify-center relative"></div>
+        <div class="w-full bg-gray-200 h-5 border-3 border-black rounded-full overflow-hidden"><div id="progressBar" class="bg-pink-400 h-full w-0 transition-all duration-300"></div></div>
     </div>
 
     <script>
-        // --- 核心設定：請在此處填入您的 Google Apps Script URL ---
-        const SCRIPT_URL = ""; 
+        // --- 核心設定：請貼入您的 GAS 部署網址 ---
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwvZjdHRTuQeT80Dmp2RAvrO-u9qfX7R2TRgN8Gdfw8eJwoa6C8YXnCbdJpoQJYqOE1/exec"; 
 
-        const boldSpeakerIcon = `
-            <svg width="55" height="55" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
-                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-            </svg>
-        `;
-        const boldMicIcon = `
-            <svg width="75" height="75" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                <line x1="12" y1="19" x2="12" y2="23"></line>
-                <line x1="8" y1="23" x2="16" y2="23"></line>
-            </svg>
-        `;
+        const boldSpeakerIcon = `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`;
+        const boldMicIcon = `<svg width="75" height="75" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>`;
 
+        /**
+         * Lesson 3 豐富題庫 (衍生字家族 + Oxford 搭配詞)
+         */
         const vocabData = [
             {
-                word: "grace", pos: "n. [U]", ipa: "/ɡres/", syllables: ["grace"], stressIndex: 0,
-                chinese: "優雅；優美", sentence: "The cat leapt onto the windowsill with grace, landing softly without a sound.", targetForm: "grace",
-                collocations: [{ en: "with grace", zh: "優雅地" }, { en: "state of grace", zh: "優雅的境界" }, { en: "natural grace", zh: "天生的優雅" }],
-                wordFamily: [{ word: "graceful", pos: "adj.", chinese: "優美的", fillBlank: "The ballet dancer's movements were so _______ that everyone watched in admiration.", targetForm: "graceful" }]
+                word: "grace", pos: "n.", ipa: "/ɡres/", syllables: ["grace"], stressIndex: 0,
+                chinese: "優雅；優美", sentence: "The cat leapt onto the windowsill with grace, landing softly.", targetForm: "grace",
+                collocations: [{ en: "with grace", zh: "優雅地" }, { en: "state of grace", zh: "優雅境界" }, { en: "natural grace", zh: "天生優雅" }],
+                wordFamily: [{ word: "graceful", pos: "adj.", chinese: "優美的", fillBlank: "The ballet dancer's movements were so _______.", targetForm: "graceful" }]
             },
             {
                 word: "desperately", pos: "adv.", ipa: "/ˈdespərıtlı/", syllables: ["des", "per", "ate", "ly"], stressIndex: 0,
-                chinese: "拚命地", sentence: "The mother desperately searched the crowded mall for her missing child.", targetForm: "desperately",
-                collocations: [{ en: "desperately search", zh: "拚命搜尋" }, { en: "desperately need", zh: "極度需要" }, { en: "want something desperately", zh: "極度渴望某物" }],
-                wordFamily: [{ word: "desperate", pos: "adj.", chinese: "渴望的；絕望的", fillBlank: "The little girl was _______ for attention, so she kept dropping forks.", targetForm: "desperate" }]
+                chinese: "拚命地", sentence: "The mother desperately searched the crowded mall for her child.", targetForm: "desperately",
+                collocations: [{ en: "desperately search", zh: "拚命搜尋" }, { en: "desperately need", zh: "極度需要" }, { en: "want desperately", zh: "極度渴望" }],
+                wordFamily: [{ word: "desperate", pos: "adj.", chinese: "渴望的；絕望的", fillBlank: "The little girl was _______ for attention.", targetForm: "desperate" }]
             },
             {
                 word: "reluctantly", pos: "adv.", ipa: "/riˈlaktəntli/", syllables: ["re", "luc", "tant", "ly"], stressIndex: 1,
-                chinese: "不情願地", sentence: "John reluctantly agreed to tidy his bedroom after his mother asked him for the fourth time.", targetForm: "reluctantly",
-                collocations: [{ en: "reluctantly agree", zh: "勉強同意" }, { en: "reluctantly accept", zh: "不情願地接受" }, { en: "reluctantly admit", zh: "勉強承認" }],
+                chinese: "不情願地", sentence: "John reluctantly agreed to tidy his bedroom after being asked.", targetForm: "reluctantly",
+                collocations: [{ en: "reluctantly agree", zh: "勉強同意" }, { en: "reluctantly accept", zh: "不情願接受" }],
                 wordFamily: [{ word: "reluctant", pos: "adj.", chinese: "勉強的", fillBlank: "Nora was having such a good time that she was _______ to leave.", targetForm: "reluctant" }]
             },
             {
                 word: "describe", pos: "vt.", ipa: "/dıˈskraib/", syllables: ["de", "scribe"], stressIndex: 1,
-                chinese: "描述", sentence: "People often describe Zoe as someone who is dedicated to her work.", targetForm: "describe",
-                collocations: [{ en: "describe in detail", zh: "詳細描述" }, { en: "accurately describe", zh: "準確地描述" }, { en: "describe A as B", zh: "將A描述為B" }],
+                chinese: "描述", sentence: "People often describe Zoe as someone dedicated to her work.", targetForm: "describe",
+                collocations: [{ en: "describe in detail", zh: "詳細描述" }, { en: "beyond description", zh: "難以筆墨形容" }, { en: "accurately describe", zh: "準確描述" }],
                 wordFamily: [{ word: "description", pos: "n.", chinese: "描述", fillBlank: "The beauty of the sunset was beyond _______.", targetForm: "description" }]
             },
             {
                 word: "shiver", pos: "vi.", ipa: "/ˈʃıvə/", syllables: ["shiv", "er"], stressIndex: 0,
                 chinese: "顫抖", sentence: "Jamie shivered with fear as the large dog drew nearer.", targetForm: "shivered",
-                collocations: [{ en: "shiver with fear", zh: "恐懼發抖" }, { en: "shiver with cold", zh: "冷得發抖" }, { en: "send a shiver down one's spine", zh: "令某人背部發涼" }],
+                collocations: [{ en: "shiver with fear", zh: "恐懼發抖" }, { en: "shiver with cold", zh: "冷得發抖" }, { en: "send a shiver down one's spine", zh: "令脊椎發涼" }],
                 wordFamily: []
             },
             {
                 word: "frustrate", pos: "vt.", ipa: "/ˈfras tret/", syllables: ["frus", "trate"], stressIndex: 0,
                 chinese: "使沮喪", sentence: "It frustrates me that I'm not able to communicate fluently.", targetForm: "frustrates",
-                collocations: [{ en: "deeply frustrate", zh: "深感沮喪" }, { en: "frustrate efforts", zh: "使努力受挫" }],
-                wordFamily: [{ word: "frustration", pos: "n.", chinese: "沮喪", fillBlank: "Harry yelled out in _______ when he realized he had locked himself out.", targetForm: "frustration" }]
+                collocations: [{ en: "deeply frustrate", zh: "深感沮喪" }, { en: "frustrate efforts", zh: "挫敗努力" }],
+                wordFamily: [{ word: "frustration", pos: "n.", chinese: "沮喪", fillBlank: "Harry yelled out in _______ when he was locked out.", targetForm: "frustration" }]
             },
             {
                 word: "concentrate", pos: "vi. vt.", ipa: "/ˈkansn, tret/", syllables: ["con", "cen", "trate"], stressIndex: 0,
-                chinese: "專注；集中", sentence: "Sandy was concentrating on the video game so fully that she forgot to eat.", targetForm: "concentrating",
-                collocations: [{ en: "concentrate on", zh: "專注於" }, { en: "concentrate efforts", zh: "集中努力" }, { en: "hard to concentrate", zh: "難以集中注意力" }],
-                wordFamily: [{ word: "concentration", pos: "n.", chinese: "專注力", fillBlank: "Julia began to lose _______ after she studied for several hours.", targetForm: "concentration" }]
+                chinese: "專注；集中", sentence: "Sandy was concentrating on the video game so fully.", targetForm: "concentrating",
+                collocations: [{ en: "concentrate on", zh: "專注於" }, { en: "concentrate efforts", zh: "集中努力" }, { en: "hard to concentrate", zh: "難以集中" }],
+                wordFamily: [{ word: "concentration", pos: "n.", chinese: "專注力", fillBlank: "Julia began to lose _______ after several hours.", targetForm: "concentration" }]
             },
             {
                 word: "explain", pos: "vt. vi.", ipa: "/ikˈsplen/", syllables: ["ex", "plain"], stressIndex: 1,
                 chinese: "解釋", sentence: "Before the game started, the coach carefully explained the rules.", targetForm: "explained",
-                collocations: [{ en: "explain oneself", zh: "為自己解釋" }, { en: "explain in detail", zh: "詳細解釋" }, { en: "explain something to someone", zh: "向某人解釋某事" }],
+                collocations: [{ en: "explain oneself", zh: "辯解" }, { en: "without explanation", zh: "不加解釋地" }, { en: "explain in detail", zh: "詳細解釋" }],
                 wordFamily: [{ word: "explanation", pos: "n.", chinese: "解釋", fillBlank: "The concert was canceled without _______.", targetForm: "explanation" }]
             },
             {
                 word: "confess", pos: "vt. vi.", ipa: "/kənˈfes/", syllables: ["con", "fess"], stressIndex: 1,
-                chinese: "坦白；承認", sentence: "Kevin confessed that he was the one who actually drove the stolen car.", targetForm: "confessed",
-                collocations: [{ en: "confess a crime", zh: "供認罪行" }, { en: "confess to someone", zh: "向某人坦白" }, { en: "confess that...", zh: "承認..." }],
-                wordFamily: [{ word: "confession", pos: "n.", chinese: "坦白；告白", fillBlank: "Tom made a _______ and admitted to breaking the law.", targetForm: "confession" }]
+                chinese: "坦白；承認", sentence: "Kevin confessed that he was the one who actually drove.", targetForm: "confessed",
+                collocations: [{ en: "confess a crime", zh: "認罪" }, { en: "confess that...", zh: "承認..." }],
+                wordFamily: [{ word: "confession", pos: "n.", chinese: "坦白", fillBlank: "Tom finally made a _______ and admitted the truth.", targetForm: "confession" }]
             },
             {
                 word: "depart", pos: "vt. vi.", ipa: "/diˈpart/", syllables: ["de", "part"], stressIndex: 1,
-                chinese: "離開；去世", sentence: "The soldier departed this world peacefully after years of service.", targetForm: "departed",
-                collocations: [{ en: "depart for New York", zh: "前往紐約" }, { en: "depart this world", zh: "過世" }, { en: "depart from", zh: "從...出發" }],
-                wordFamily: [{ word: "departure", pos: "n.", chinese: "離開", fillBlank: "Due to rough seas, the ship's _______ was delayed.", targetForm: "departure" }]
-            },
-            {
-                word: "regret", pos: "vt. n.", ipa: "/ri'gret/", syllables: ["re", "gret"], stressIndex: 1,
-                chinese: "懊悔", sentence: "Jill began to regret her decision to move to a new city without a job.", targetForm: "regret",
-                collocations: [{ en: "deeply regret", zh: "深感遺憾" }, { en: "have no regrets", zh: "無怨無悔" }, { en: "express regret", zh: "表達歉意" }],
-                wordFamily: []
+                chinese: "出發；去世", sentence: "The soldier departed this world peacefully after years.", targetForm: "departed",
+                collocations: [{ en: "depart for New York", zh: "前往紐約" }, { en: "depart from", zh: "從...出發" }, { en: "depart this world", zh: "過世" }],
+                wordFamily: [{ word: "departure", pos: "n.", chinese: "離開", fillBlank: "The ship's _______ was delayed due to rough seas.", targetForm: "departure" }]
             }
         ];
 
@@ -305,7 +240,7 @@
             const cl = document.getElementById('classInput').value;
             const no = document.getElementById('noInput').value;
             const nm = document.getElementById('nameInput').value;
-            if(!cl || !no || !nm) return alert("請輸入完整資料！");
+            if(!cl || !no || !nm) return alert("請填寫完整資訊！");
             state.user = { class: cl, no: no, name: nm };
             document.getElementById('userInfoDisplay').innerText = `${cl}班 ${no}號 ${nm}`;
             document.getElementById('loginPage').classList.add('hidden');
@@ -325,19 +260,51 @@
         function renderLearn() {
             const container = document.getElementById('learnView');
             container.innerHTML = vocabData.map((v, idx) => `
-                <div class="brutal-card overflow-visible bg-white mb-28 relative">
+                <div class="brutal-card overflow-visible bg-white mb-32 relative text-left">
                     <div class="learn-header">
                         <div class="pos-tag">${v.pos}</div>
                         <div class="ipa-pill">${v.ipa}</div>
                         <div class="word-title">${v.word}</div>
-                        <div class="word-pill-tag">${v.word}</div>
+                        <div class="syllable-container">
+                            ${v.syllables.map((s, si) => `<div class="syllable-pill ${si === v.stressIndex ? 'stress' : ''}">${s}</div>`).join('')}
+                        </div>
                         <div class="speaker-btn" onclick="speak('${v.word}')">${boldSpeakerIcon}</div>
                     </div>
-                    <div class="p-10 pt-24 space-y-12">
-                        <div><div class="font-black mb-3 uppercase text-xs text-gray-400 tracking-widest">○ Meaning</div><p class="text-3xl font-black text-[#5D5FEF] border-l-8 border-[#5D5FEF] pl-5 italic">${v.chinese}</p></div>
-                        ${v.wordFamily.length > 0 ? `<div class="family-box"><div class="flex items-center gap-2 text-[#5D5FEF] font-black text-xs uppercase mb-3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Word Family:</div><div class="flex flex-col gap-2">${v.wordFamily.map(f => `<div class="bg-white border-2 border-[#5D5FEF] p-3 rounded-xl flex items-baseline gap-2"><span class="font-black text-lg text-[#5D5FEF]">${f.word}</span><span class="text-xs font-bold text-gray-400 italic">(${f.pos})</span><span class="text-sm font-bold text-gray-600">${f.chinese}</span></div>`).join('')}</div></div>` : ''}
-                        <div><div class="font-black mb-3 uppercase text-xs text-gray-400 tracking-widest">○ Example</div><div class="bg-gray-50 border-4 border-gray-100 p-8 rounded-[32px] italic font-bold text-gray-700 text-xl leading-relaxed shadow-[4px_4px_0px_#eee]">"${v.sentence}"</div></div>
-                        <div class="mini-match-card"><div class="text-pink-600 font-black text-xs uppercase mb-3 tracking-widest">✨ Mini Match (Oxford Collocations)</div><div class="match-grid" id="match-grid-${idx}">${shuffleArray([...v.collocations]).map(c => `<div class="match-item" onclick="handleMatch(this, '${c.en}', ${idx}, 'en')">${c.en}</div>`).join('')}${shuffleArray([...v.collocations]).map(c => `<div class="match-item" onclick="handleMatch(this, '${c.en}', ${idx}, 'zh')">${c.zh}</div>`).join('')}</div></div>
+                    <div class="p-10 pt-28 space-y-12">
+                        <div>
+                            <div class="font-black mb-3 uppercase text-xs text-gray-400 tracking-widest"><span class="section-dot bg-yellow-400"></span>Meaning</div>
+                            <p class="text-3xl font-black text-[#5D5FEF] pl-2 italic">${v.chinese}</p>
+                        </div>
+                        
+                        ${v.wordFamily.length > 0 ? `
+                        <div class="family-box">
+                            <div class="flex items-center gap-2 text-[#5D5FEF] font-black text-xs uppercase mb-3">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                Word Family:
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                ${v.wordFamily.map(f => `
+                                    <div class="bg-white border-2 border-[#C7D2FE] p-3 rounded-xl flex items-baseline gap-2">
+                                        <span class="font-black text-lg text-[#5D5FEF]">${f.word}</span>
+                                        <span class="text-xs font-bold text-gray-400">(${f.pos})</span>
+                                        <span class="text-sm font-bold text-gray-600">${f.chinese}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>` : ''}
+
+                        <div>
+                            <div class="font-black mb-3 uppercase text-xs text-gray-400 tracking-widest"><span class="section-dot bg-green-400"></span>Example</div>
+                            <div class="bg-gray-50 border-4 border-gray-100 p-8 rounded-[32px] italic font-bold text-gray-700 text-xl leading-relaxed">"${v.sentence}"</div>
+                        </div>
+
+                        <div class="mini-match-card">
+                            <div class="text-pink-600 font-black text-xs uppercase mb-3 tracking-widest">✨ Mini Match (Oxford Collocations)</div>
+                            <div class="match-grid" id="match-grid-${idx}">
+                                ${shuffleArray([...v.collocations]).map(c => `<div class="match-item" onclick="handleMatch(this, '${c.en}', ${idx}, 'en')">${c.en}</div>`).join('')}
+                                ${shuffleArray([...v.collocations]).map(c => `<div class="match-item" onclick="handleMatch(this, '${c.en}', ${idx}, 'zh')">${c.zh}</div>`).join('')}
+                            </div>
+                        </div>
                     </div>
                 </div>
             `).join('');
@@ -368,11 +335,8 @@
             const text = document.getElementById('feedbackText');
             const ans = document.getElementById('feedbackCorrectAnswer');
 
-            if(isCorrect) {
-                card.style.backgroundColor = 'var(--main-green)'; icon.innerText = '✅'; text.innerText = 'Excellent!'; ans.innerText = '+10 XP';
-            } else {
-                card.style.backgroundColor = 'var(--main-red)'; icon.innerText = '❌'; text.innerText = 'Not Quite...'; ans.innerText = `Correct: ${correctAnswer}`;
-            }
+            if(isCorrect) { card.style.backgroundColor = 'var(--main-green)'; icon.innerText = '✅'; text.innerText = 'Excellent!'; ans.innerText = '+10 XP'; }
+            else { card.style.backgroundColor = 'var(--main-red)'; icon.innerText = '❌'; text.innerText = 'Not Quite...'; ans.innerText = `Correct: ${correctAnswer}`; }
             setTimeout(() => { overlay.style.display = 'none'; nextQuestion(); }, isCorrect ? 900 : 2500);
         }
 
@@ -396,13 +360,13 @@
             document.getElementById('progressBar').style.width = `${((state.qIndex + 1) / 15) * 100}%`;
             container.innerHTML = "";
             if (state.currentChallenge === 'speak') {
-                container.innerHTML = `<h2 class="text-7xl font-black mb-12 italic tracking-tighter uppercase text-center">${q.word}</h2><div onclick="recognitionStart()" id="micBtn" class="w-52 h-52 bg-yellow-400 rounded-full border-5 border-black brutal-btn flex items-center justify-center cursor-pointer mb-8 shadow-[12px_12px_0px_black]">${boldMicIcon}</div><p id="micHint" class="font-black text-gray-500 uppercase tracking-widest text-sm">Tap to Record</p>`;
+                container.innerHTML = `<h2 class="text-7xl font-black mb-12 italic tracking-tighter uppercase text-center">${q.word}</h2><div onclick="recognitionStart()" id="micBtn" class="w-52 h-52 bg-yellow-400 rounded-full border-5 border-black brutal-btn flex items-center justify-center cursor-pointer mb-8 shadow-[12px_12px_0px_black]">${boldMicIcon}</div><p id="micHint" class="font-black text-gray-500 uppercase tracking-widest text-sm text-center">Tap to Record</p>`;
             } else if (state.currentChallenge === 'spell') {
                 container.innerHTML = `<div class="w-full space-y-12 text-center"><div onclick="speak('${q.word}')" class="w-32 h-32 bg-pink-100 mx-auto rounded-[40px] border-4 border-black brutal-btn flex items-center justify-center cursor-pointer shadow-[8px_8px_0px_black]">${boldSpeakerIcon}</div><input type="text" id="spellInput" class="w-full brutal-input text-center outline-none uppercase text-4xl font-black tracking-widest"><button onclick="checkSpell()" class="w-full py-6 brutal-btn bg-black text-white font-black rounded-2xl text-2xl uppercase">Submit</button></div>`;
                 setTimeout(() => document.getElementById('spellInput').focus(), 150);
             } else {
                 const fillText = q.fillBlank || q.data.sentence.replace(q.targetForm, "_______");
-                container.innerHTML = `<div class="w-full text-left space-y-10"><div class="bg-gray-100 p-10 rounded-[48px] border-4 border-black italic font-bold text-2xl shadow-[8px_8px_0px_black]">"${fillText}"</div><p class="text-sm font-black text-orange-600 uppercase tracking-widest px-3 italic">時態與詞形 (Hint: ${q.chinese})</p><input type="text" id="fillInput" class="w-full brutal-input outline-none text-2xl font-black"><button onclick="checkFill()" class="w-full py-6 brutal-btn bg-orange-400 font-black rounded-2xl text-white text-2xl uppercase">Check</button></div>`;
+                container.innerHTML = `<div class="w-full text-left space-y-10"><div class="bg-gray-100 p-10 rounded-[48px] border-4 border-black italic font-bold text-2xl shadow-[8px_8px_0px_black]">"${fillText}"</div><p class="text-sm font-black text-orange-600 uppercase tracking-widest px-3 italic text-center">⚠️ 時態與詞形 (Hint: ${q.chinese})</p><input type="text" id="fillInput" class="w-full brutal-input outline-none text-2xl font-black"><button onclick="checkFill()" class="w-full py-6 brutal-btn bg-orange-400 font-black rounded-2xl text-white text-2xl uppercase">Check</button></div>`;
             }
         }
 
@@ -414,25 +378,14 @@
             r.onresult = (e) => {
                 const transcript = e.results[0][0].transcript.toLowerCase();
                 const target = state.challengePool[state.qIndex].word.toLowerCase();
-                if(transcript.includes(target)) { state.score += 10; state.xp += 10; updateXPDisplay(); showFeedback(true); } 
-                else { showFeedback(false, target); }
+                if(transcript.includes(target)) { state.score += 10; state.xp += 10; updateXPDisplay(); showFeedback(true); } else { showFeedback(false, target); }
             };
             r.onend = () => { document.getElementById('micBtn').style.backgroundColor = 'var(--main-yellow)'; };
             r.start();
         }
 
-        function checkSpell() {
-            const input = document.getElementById('spellInput').value.toLowerCase().trim();
-            const correct = state.challengePool[state.qIndex].word.toLowerCase();
-            if(input === correct) { state.score += 10; state.xp += 10; updateXPDisplay(); showFeedback(true); } else { showFeedback(false, correct); }
-        }
-
-        function checkFill() {
-            const input = document.getElementById('fillInput').value.toLowerCase().trim();
-            const correct = state.challengePool[state.qIndex].targetForm.toLowerCase();
-            if(input === correct) { state.score += 10; state.xp += 10; updateXPDisplay(); showFeedback(true); } else { showFeedback(false, correct); }
-        }
-
+        function checkSpell() { const input = document.getElementById('spellInput').value.toLowerCase().trim(); const correct = state.challengePool[state.qIndex].word.toLowerCase(); if(input === correct) { state.score += 10; state.xp += 10; updateXPDisplay(); showFeedback(true); } else { showFeedback(false, correct); } }
+        function checkFill() { const input = document.getElementById('fillInput').value.toLowerCase().trim(); const correct = state.challengePool[state.qIndex].targetForm.toLowerCase(); if(input === correct) { state.score += 10; state.xp += 10; updateXPDisplay(); showFeedback(true); } else { showFeedback(false, correct); } }
         function nextQuestion() { state.qIndex++; if (state.qIndex < 15) renderChallenge(); else finishChallenge(); }
 
         function finishChallenge() {
@@ -440,12 +393,7 @@
             uploadToSheets();
         }
 
-        function uploadToSheets() {
-            if (!SCRIPT_URL) return;
-            const data = { ...state.user, score: state.score, type: state.currentChallenge, timestamp: new Date().toLocaleString() };
-            fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
-        }
-
+        function uploadToSheets() { if (!SCRIPT_URL) return; const data = { ...state.user, score: state.score, type: state.currentChallenge, timestamp: new Date().toLocaleString() }; fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) }); }
         function backToMenu() { document.getElementById('challengePage').classList.add('hidden'); document.getElementById('mainMenu').classList.remove('hidden'); }
         function speak(t) { const m = new SpeechSynthesisUtterance(t); m.lang = 'en-US'; window.speechSynthesis.speak(m); }
         function shuffleArray(a) { return a.sort(() => Math.random() - 0.5); }
